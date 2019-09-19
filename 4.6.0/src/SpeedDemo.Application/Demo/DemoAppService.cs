@@ -5,6 +5,7 @@ using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.UI;
 using SpeedDemo.Demo.Dto;
+using SpeedDemo.MultiTenancy;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -21,36 +22,31 @@ namespace SpeedDemo.Demo
     public class DemoAppService : AsyncCrudAppService<TopicInfo, TopicInfoDto, long, PagedResultRequestDto, CreateTopicInfoDto, UpdateTopicInfoDto>
         , IDemoAppService
     {
-        public DemoAppService(IRepository<TopicInfo,long> topicInfoRepository)
+        private IDemoEfRepository demoEfRepository;
+
+        public DemoAppService(IDemoEfRepository demoEfRepository,
+            IRepository<TopicInfo, long> topicInfoRepository)
             : base(topicInfoRepository)
         {
+            this.demoEfRepository = demoEfRepository;
         }
         public void Demo()
         {
             Stopwatch sw = new Stopwatch();
+            
             sw.Start();
-            var list = Repository.GetAll().ToList();
+            var list2 = demoEfRepository.GetAll();
             sw.Stop();
-            long totalTime = sw.ElapsedMilliseconds;
-            Debug.WriteLine($"count:{list.Count},time:{totalTime}");
+            var totalTime = sw.ElapsedMilliseconds;
+            Debug.WriteLine($"count:{list2.Count},time:{totalTime}");
 
             sw.Reset();
             sw.Start();
-            var list2 = Repository.GetAll().ToList();
+            var list = Repository.GetAll().ToList();
             sw.Stop();
             totalTime = sw.ElapsedMilliseconds;
-            Debug.WriteLine($"count:{list2.Count},time:{totalTime}");
-            /* 
-             * output
-             * 
-             count:40001,time:19941
-             count:40001,time:106
+            Debug.WriteLine($"count:{list.Count},time:{totalTime}");
 
-            * test second output
-
-            count:40001,time:34677
-            count:40001,time:188
-             */
         }
     }
 }
