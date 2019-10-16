@@ -41,65 +41,65 @@ namespace SpeedDemo.Roles
             _roleRepository = roleRepository;
         }
 
-        public override async Task<RoleDto> Create(CreateRoleDto input)
-        {
-            CheckCreatePermission();
+        //public override async Task<RoleDto> Create(CreateRoleDto input)
+        //{
+        //    CheckCreatePermission();
 
-            var role = ObjectMapper.Map<Role>(input);
+        //    var role = ObjectMapper.Map<Role>(input);
 
-            CheckErrors(await _roleManager.CreateAsync(role));
+        //    CheckErrors(await _roleManager.CreateAsync(role));
 
-            UnitOfWorkManager.Current.SaveChanges();
+        //    UnitOfWorkManager.Current.SaveChanges();
 
-            var grantedPermissions = PermissionManager
-                .GetAllPermissions()
-                .Where(p => input.Permissions.Contains(p.Name))
-                .ToList();
+        //    var grantedPermissions = PermissionManager
+        //        .GetAllPermissions()
+        //        .Where(p => input.Permissions.Contains(p.Name))
+        //        .ToList();
 
-            await _roleManager.SetGrantedPermissionsAsync(role, grantedPermissions);
+        //    await _roleManager.SetGrantedPermissionsAsync(role, grantedPermissions);
 
-            return MapToEntityDto(role);
-        }
+        //    return MapToEntityDto(role);
+        //}
 
-        public override async Task<RoleDto> Update(RoleDto input)
-        {
-            CheckUpdatePermission();
+        //public override async Task<RoleDto> Update(RoleDto input)
+        //{
+        //    CheckUpdatePermission();
 
-            var role = await _roleManager.GetRoleByIdAsync(input.Id);
+        //    var role = await _roleManager.GetRoleByIdAsync(input.Id);
 
-            ObjectMapper.Map(input, role);
+        //    ObjectMapper.Map(input, role);
 
-            CheckErrors(await _roleManager.UpdateAsync(role));
+        //    CheckErrors(await _roleManager.UpdateAsync(role));
 
-            var grantedPermissions = PermissionManager
-                .GetAllPermissions()
-                .Where(p => input.Permissions.Contains(p.Name))
-                .ToList();
+        //    var grantedPermissions = PermissionManager
+        //        .GetAllPermissions()
+        //        .Where(p => input.Permissions.Contains(p.Name))
+        //        .ToList();
 
-            await _roleManager.SetGrantedPermissionsAsync(role, grantedPermissions);
+        //    await _roleManager.SetGrantedPermissionsAsync(role, grantedPermissions);
 
-            return MapToEntityDto(role);
-        }
+        //    return MapToEntityDto(role);
+        //}
 
-        public override async Task Delete(EntityDto<int> input)
-        {
-            CheckDeletePermission();
+        //public override async Task Delete(EntityDto<int> input)
+        //{
+        //    CheckDeletePermission();
 
-            var role = await _roleManager.FindByIdAsync(input.Id);
-            if (role.IsStatic)
-            {
-                throw new UserFriendlyException("CannotDeleteAStaticRole");
-            }
+        //    var role = await _roleManager.FindByIdAsync(input.Id);
+        //    if (role.IsStatic)
+        //    {
+        //        throw new UserFriendlyException("CannotDeleteAStaticRole");
+        //    }
 
-            var users = await GetUsersInRoleAsync(role.Name);
+        //    var users = await GetUsersInRoleAsync(role.Name);
 
-            foreach (var user in users)
-            {
-                CheckErrors(await _userManager.RemoveFromRoleAsync(user, role.Name));
-            }
+        //    foreach (var user in users)
+        //    {
+        //        CheckErrors(await _userManager.RemoveFromRoleAsync(user, role.Name));
+        //    }
 
-            CheckErrors(await _roleManager.DeleteAsync(role));
-        }
+        //    CheckErrors(await _roleManager.DeleteAsync(role));
+        //}
 
         private Task<List<long>> GetUsersInRoleAsync(string roleName)
         {
