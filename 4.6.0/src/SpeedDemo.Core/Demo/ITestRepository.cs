@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace SpeedDemo.Demo
 {
-    public interface IDemoEfRepository : IRepository
+    public interface ITestRepository:IRepository
     {
         List<TopicInfo> GetAll();
+
+        List<TopicInfo> GetSqlAll();
     }
 }

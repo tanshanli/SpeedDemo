@@ -22,30 +22,41 @@ namespace SpeedDemo.Demo
     public class DemoAppService : AsyncCrudAppService<TopicInfo, TopicInfoDto, long, PagedResultRequestDto, CreateTopicInfoDto, UpdateTopicInfoDto>
         , IDemoAppService
     {
-        private IDemoEfRepository demoEfRepository;
-
-        public DemoAppService(IDemoEfRepository demoEfRepository,
+        ITestRepository testRepository;
+        public DemoAppService(
+            ITestRepository test1Repository,
             IRepository<TopicInfo, long> topicInfoRepository)
             : base(topicInfoRepository)
         {
-            this.demoEfRepository = demoEfRepository;
+            this.testRepository = test1Repository;
         }
         public void Demo()
         {
             Stopwatch sw = new Stopwatch();
-            
-            sw.Start();
-            var list2 = demoEfRepository.GetAll();
-            sw.Stop();
-            var totalTime = sw.ElapsedMilliseconds;
-            Debug.WriteLine($"count:{list2.Count},time:{totalTime}");
+            long totalTime = 0;
 
-            sw.Reset();
+            //simple EF(Do not use the encapsulation of EF in ABP)
             sw.Start();
-            var list = Repository.GetAll().ToList();
+            var simpleEfResult = testRepository.GetAll();
             sw.Stop();
             totalTime = sw.ElapsedMilliseconds;
-            Debug.WriteLine($"count:{list.Count},time:{totalTime}");
+            Debug.WriteLine($"simpleEfResult count:{simpleEfResult.Count},time:{totalTime}");
+
+            //abp sql query (Database.SqlQuery)
+            sw.Reset();
+            sw.Start();
+            var abpSqlResult = testRepository.GetSqlAll();
+            sw.Stop();
+            totalTime = sw.ElapsedMilliseconds;
+            Debug.WriteLine($"abpSqlResult count:{abpSqlResult.Count},time:{totalTime}");
+
+            //abp linq query
+            sw.Reset();
+            sw.Start();
+            var abpLinqResult = Repository.GetAll().ToList();
+            sw.Stop();
+            totalTime = sw.ElapsedMilliseconds;
+            Debug.WriteLine($"abpLinqResult count:{abpLinqResult.Count},time:{totalTime}");
 
         }
     }

@@ -199,7 +199,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Demo\IDemoEfRepository.cs" />
+    <Compile Include="Demo\ITestRepository.cs" />
     <Compile Include="Demo\TopicInfo.cs" />
     <Compile Include="SpeedDemoConsts.cs" />
     <Compile Include="SpeedDemoCoreModule.cs" />
