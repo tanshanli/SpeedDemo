@@ -20,7 +20,7 @@ namespace SpeedDemo.EntityFramework.Repositories
         {
             using (var context = new SimpleEfDbContext())
             {
-                return context.TopicInfo.ToList();
+                return context.TopicInfo.AsNoTracking().ToList();
             }
         }
 

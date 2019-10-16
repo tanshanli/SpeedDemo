@@ -7,6 +7,7 @@ using Abp.UI;
 using SpeedDemo.Demo.Dto;
 using SpeedDemo.MultiTenancy;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Dynamic.Core;
@@ -53,7 +54,7 @@ namespace SpeedDemo.Demo
             //abp linq query
             sw.Reset();
             sw.Start();
-            var abpLinqResult = Repository.GetAll().ToList();
+            var abpLinqResult = Repository.GetAll().AsNoTracking().ToList();
             sw.Stop();
             totalTime = sw.ElapsedMilliseconds;
             Debug.WriteLine($"abpLinqResult count:{abpLinqResult.Count},time:{totalTime}");
